@@ -24,6 +24,54 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+  int _numberOfPeople = 4; // set default number of people
+  int _tipPercent = 10; // set default tip percent
+  double _totalBill = 0;
+  String _individualExpense = '0';
+
+  void calculateExpense() {
+    setState(() {
+      double totalExpense = ((100 + _tipPercent) / 100) * _totalBill;
+      _individualExpense = (totalExpense / _numberOfPeople).toStringAsFixed(2);
+    });
+  }
+
+  void incrementTip() {
+    setState(() {
+      _tipPercent += 5;
+    });
+
+    calculateExpense();
+  }
+
+  void decrementTip() {
+    setState(() {
+      if (_tipPercent != 0) {
+        _tipPercent -= 5;
+      }
+    });
+
+    calculateExpense();
+  }
+
+  void incrementPeople() {
+    setState(() {
+      _numberOfPeople += 1;
+    });
+
+    calculateExpense();
+  }
+
+  void decrementPeople() {
+    setState(() {
+      if (_numberOfPeople != 0) {
+        _numberOfPeople -= 1;
+      }
+    });
+
+    calculateExpense();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -38,7 +86,7 @@ class _MainPageState extends State<MainPage> {
                   padding: const EdgeInsets.only(
                       left: 0.0, top: 30.0, right: 0.0, bottom: 10.0),
                   child: Text(
-                    '0',
+                    '\$$_individualExpense',
                     style: TextStyle(
                       fontSize: 50.0,
                       fontWeight: FontWeight.bold,
@@ -83,6 +131,10 @@ class _MainPageState extends State<MainPage> {
               ),
               Center(
                 child: TextField(
+                  onChanged: (text) {
+                    _totalBill = double.parse(text);
+                    calculateExpense();
+                  },
                   decoration:
                       InputDecoration(border: InputBorder.none, hintText: '0'),
                   keyboardType: TextInputType.numberWithOptions(decimal: true),
@@ -112,7 +164,7 @@ class _MainPageState extends State<MainPage> {
                   children: <Widget>[
                     Expanded(
                       child: FlatButton(
-                          onPressed: () {},
+                          onPressed: decrementTip,
                           child: Image.asset(
                             'assets/subtract.png',
                             width: 75,
@@ -122,7 +174,7 @@ class _MainPageState extends State<MainPage> {
                     Expanded(
                       child: Center(
                         child: Text(
-                          '20%',
+                          '$_tipPercent%',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
@@ -133,7 +185,7 @@ class _MainPageState extends State<MainPage> {
                     ),
                     Expanded(
                       child: FlatButton(
-                          onPressed: () {},
+                          onPressed: incrementTip,
                           child: Image.asset(
                             'assets/add.png',
                             width: 75,
@@ -161,7 +213,7 @@ class _MainPageState extends State<MainPage> {
                   children: <Widget>[
                     Expanded(
                       child: FlatButton(
-                          onPressed: () {},
+                          onPressed: decrementPeople,
                           child: Image.asset(
                             'assets/subtract.png',
                             width: 75,
@@ -171,7 +223,7 @@ class _MainPageState extends State<MainPage> {
                     Expanded(
                       child: Center(
                         child: Text(
-                          '4',
+                          '$_numberOfPeople',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
@@ -182,7 +234,7 @@ class _MainPageState extends State<MainPage> {
                     ),
                     Expanded(
                       child: FlatButton(
-                          onPressed: () {},
+                          onPressed: incrementPeople,
                           child: Image.asset(
                             'assets/add.png',
                             width: 75,
